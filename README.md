@@ -39,6 +39,35 @@ cd kudu
 cargo build --release
 ```
 
+### With Nix flakes
+
+Run directly from the checkout:
+
+```shell
+nix run
+```
+
+Or include `kudu` in a flake-based NixOS configuration:
+
+```nix
+{
+  inputs.kudu.url = "github:pythops/kudu";
+
+  outputs = { nixpkgs, kudu, ... }: {
+    nixosConfigurations.my-host = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        kudu.nixosModules.default
+        {
+          programs.kudu.enable = true;
+          users.users.alice.extraGroups = [ "kvm" ];
+        }
+      ];
+    };
+  };
+}
+```
+
 ### On Arch Linux
 
 ```bash
